@@ -1,4 +1,5 @@
 import React, {Component} from "react"
+import ChangePage from "./ChangePage";
 
 
 export default class DisplayData extends Component{
@@ -11,9 +12,18 @@ export default class DisplayData extends Component{
 
     increment = (page) =>{
         let newPage = page + 1;
+        if(newPage > this.props.data.length){
+            newPage = 1;
+        }
         this.setState({page: newPage})
     }
-
+    decrement = (page) =>{
+        let newPage = page - 1;
+        if(newPage === 0){
+            newPage = this.props.data.length;
+        }
+        this.setState({page: newPage})
+    }
     
 
     render(){
@@ -23,6 +33,9 @@ export default class DisplayData extends Component{
             
             if(this.state.page === id){
                 return (<div>
+                    <header>
+                        <p>{`${id} / ${this.props.data.length}`}</p>
+                    </header>
                     <p>
                      {`${name.first} ${name.last}`}
                     </p>
@@ -40,7 +53,8 @@ export default class DisplayData extends Component{
         return(
             <div>
                 {data}
-                <button >Go Right</button>
+                
+                <ChangePage increment ={this.increment} decrement ={this.decrement} page={this.state.page}/>
             </div>
         )
     }
