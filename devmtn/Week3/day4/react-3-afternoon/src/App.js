@@ -306,7 +306,13 @@ class App extends Component {
     }) 
     return (
       <div className="App">
+        <header className="header">
+              <h3>Home</h3>
+        </header>
+        <div className="main">
         <DisplayData data={this.state.data}/>
+        </div>
+        
       </div>
     );
   }
