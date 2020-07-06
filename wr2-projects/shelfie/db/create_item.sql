@@ -1,0 +1,1 @@
+insert into inventory (name, image) values ($1, $2);
