@@ -1,4 +1,16 @@
 module.exports = {
+    getOne: (req, res, next) =>{
+      const dbInstance = req.app.get('db');
+
+      const {id} = req.params;
+
+      dbInstance.get_one(id)
+      .then(item => res.status(200).send(item))
+      .catch(err => {
+        res.status(500).send({errorMessage: "error getting info from server"})
+        console.log(err)
+      })
+    },
     getAll: (req, res, next) => {
         const dbInstance = req.app.get('db');
 

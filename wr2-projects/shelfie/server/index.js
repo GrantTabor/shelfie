@@ -21,6 +21,7 @@ ssl: {rejectUnauthorized: false}
 
 
 app.get("/api/inventory", controller.getAll);
+app.get("/api/inventory/:id", controller.getOne);
 app.post("/api/inventory", controller.create);
 app.put("/api/inventory/:id", controller.update);
 app.delete("/api/inventory/:id", controller.delete);

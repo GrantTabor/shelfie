@@ -1,28 +1,72 @@
 import React, {Component} from "react";
 import DeleteItem from "./DeleteItem";
+import axios from "axios";
+
 
 export default class Dashboard extends Component {
     constructor(props){
-        super(props);
-    }
-
+        super(props)
+        this.state = {
+          inventory: [],
+          editingObject: {}
+        }
+        
+      }
+    
+      componentDidMount(){
+        this.getInventory();
+      }
+      componentDidUpdate(){
+          this.getInventory();
+      }
+     
+      getInventory = () =>{
+        axios.get("/api/inventory")
+        .then(res =>{
+          this.setState({inventory: res.data})
+        })
+        .catch(err =>{
+          console.log(err);
+        })
+      }
+      deleteItem = (id) =>{
+        axios.delete(`/api/inventory/${id}`)
+        .then(res =>{
+          this.getInventory();
+        })
+        .catch(err =>{
+          alert(err)
+        })
+      }
+  
     render(){
-        const mappedInventory = this.props.inventory.map((object) =>{
+        const mappedInventory = this.state.inventory.map((object) =>{
             const {id, image, name, price} = object
             
             return(
-                <div>
+            <div className="item">
                 <img src={ image } className="image"/>
-                {name}
-                <span> ${price}</span>
-                <DeleteItem id={id} deleteItem = {this.props.deleteItem}/>
-                <button onClick={() => this.props.addEditingObject(object)} >Edit</button>
+                <div className="info">
+                    <div className="text">
+                    <p>{name}</p>
+                    <p> ${price}</p>
+                    </div>
+                    <div className="buttons">
+                        <DeleteItem id={id} deleteItem = {this.deleteItem}/>
+                        <button onClick={()=>this.props.history.push(`/edit/${id}`)} >Edit</button>
+                    </div>
+
+                    
+                </div>
+                
+                
             </div>
             )
         })
         return(
-            <div>
+            <div className="body" >
                 {mappedInventory}
+                
             </div>
         )
     }
