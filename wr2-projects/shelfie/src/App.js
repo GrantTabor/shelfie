@@ -14,15 +14,19 @@ class App extends Component {
   constructor(props){
     super(props)
     this.state = {
-      inventory: []
+      inventory: [],
+      editingObject: {}
     }
+    this.addEditingObject = this.addEditingObject.bind(this);
   }
 
   componentDidMount(){
     this.getInventory();
   }
 
-  
+  addEditingObject(object){
+    this.setState({editingObject: object})
+  }
   getInventory = () =>{
     axios.get("/api/inventory")
     .then(res =>{
@@ -60,6 +64,22 @@ class App extends Component {
     })
   }
 
+  editItem = (id, name, price, image) =>{
+    if (image === ""){
+      image = "https://static.toiimg.com/photo/msid-67586673/67586673.jpg?resizemode=4&width=400"
+    }
+    if (price === ""){
+      price = 0;
+    }
+
+    axios.put(`/api/inventory/${id}`, {name, price, image})
+    .then(res =>{
+      this.getInventory();
+    })
+    .catch(err =>{
+      console.log(err)
+    })
+  }
 
 
   
@@ -74,12 +94,15 @@ class App extends Component {
               <Dashboard 
               inventory = {this.state.inventory}
               deleteItem = {this.deleteItem}
+              addEditingObject = {this.addEditingObject}
               />
            
           
 
           <Form 
           createItem = {this.createItem}
+          editingObject = {this.state.editingObject}
+          editItem = {this.editItem}
           />
       </div>
     );

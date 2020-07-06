@@ -24,9 +24,10 @@ module.exports = {
     update: ( req, res, next ) => {
         const dbInstance = req.app.get('db');
         
-        const {params, body} = req;
+        const {params} = req;
+        const {name, price, image} = req.body;
         //body might need to be changed to query?
-        dbInstance.item([params.id, body.name, body.price, body.image])
+        dbInstance.update_item([params.id, name, price, image])
           .then( (inventory) => res.status(200).send(inventory) )
           .catch( err => {
             res.status(500).send({errorMessage: "error updating"});

@@ -6,7 +6,17 @@ export default class Form extends Component {
         this.state = {
             nameInput: "",
             priceInput: "",
-            imageInput: ""
+            imageInput: "",
+            editing: false
+        }
+    }
+
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.editingObject !== this.props.editingObject){
+            this.setState({nameInput: this.props.editingObject.name, priceInput: this.props.editingObject.price, imageInput: this.props.editingObject.image})
+            this.setState({editing: true})
+            console.log(this.props.editingObject.id)
         }
     }
 
@@ -21,9 +31,16 @@ export default class Form extends Component {
     }
 
     handleAdd = () =>{
-        this.props.createItem(this.state.nameInput, this.state.priceInput, this.state.imageInput);
-        this.setState({nameInput: "", priceInput: "", imageInput: ""})
-
+        if(this.state.nameInput !== ""){
+            this.props.createItem(this.state.nameInput, this.state.priceInput, this.state.imageInput);
+            this.setState({nameInput: "", priceInput: "", imageInput: ""})
+        }
+    }
+    handleEdit = () =>{
+        if(this.state.nameInput !== ""){
+            this.props.editItem(this.props.editingObject.id, this.state.nameInput, this.state.priceInput, this.state.imageInput);
+            this.setState({nameInput: "", priceInput: "", imageInput: "", editing: false})
+        }
     }
 
     render(){
@@ -34,8 +51,12 @@ export default class Form extends Component {
                 <input value={this.state.priceInput} type="number" placeholder="Price" onChange={e => this.handlePriceChange(e.target.value)} />
 
                 <img src={this.state.imageInput}/>
-                <button onClick={() => {this.setState({nameInput: "", priceInput: "", imageInput: ""})}}>Cancel</button>
-                <button onClick={() => this.handleAdd()} >Add To Inventory</button>
+                <button onClick={() => {this.setState({nameInput: "", priceInput: "", imageInput: "", editing: false})}}>Cancel</button>
+                {this.state.editing
+                ? (<button onClick={() => this.handleEdit()} >Save Changes</button>)
+                : (<button onClick={() => this.handleAdd()} >Add To Inventory</button>)
+                }
+                
             </div>
         );
     }
