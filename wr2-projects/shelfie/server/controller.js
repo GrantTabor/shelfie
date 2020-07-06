@@ -12,10 +12,10 @@ module.exports = {
     create: (req, res, next) =>{
         const dbInstance = req.app.get('db');
 
-        const {name, image} = req.body;
+        const {name, price, image} = req.body;
 
-        dbInstance.create_item([name, image])
-        .then(() => res.sendStatus(200))
+        dbInstance.create_item([name, price, image])
+        .then((inventory) => res.status(200).send(inventory))
         .catch((err) => {
             res.status(500).send({errorMessage: "error creating new item"});
             console.log(err) ;
@@ -25,9 +25,9 @@ module.exports = {
         const dbInstance = req.app.get('db');
         
         const {params, body} = req;
-
-        dbInstance.item([params.id, body.name, body.image])
-          .then( () => res.sendStatus(200) )
+        //body might need to be changed to query?
+        dbInstance.item([params.id, body.name, body.price, body.image])
+          .then( (inventory) => res.status(200).send(inventory) )
           .catch( err => {
             res.status(500).send({errorMessage: "error updating"});
             console.log(err)
@@ -39,7 +39,7 @@ module.exports = {
         const {id} = req.params;
 
         dbInstance.delete_item(id)
-          .then( () => res.sendStatus(200) )
+          .then( (inventory) => res.status(200).send(inventory))
           .catch( err => {
             res.status(500).send({errorMessage: "error deleting"});
             console.log(err)

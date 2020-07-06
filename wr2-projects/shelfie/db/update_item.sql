@@ -1,3 +1,3 @@
 update inventory 
-set name = $2, image = $3
+set name = $2, price = $3, image = $4
 where id = $1;

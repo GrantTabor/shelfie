@@ -1,9 +1,14 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+
 import Header from "./Components/Header";
 import Form from "./Components/Form";
-import axios from 'axios';
+import Dashboard from"./Components/Dashboard";
+import DeleteItem from "./Components/DeleteItem";
+
+
 
 class App extends Component {
   constructor(props){
@@ -13,6 +18,11 @@ class App extends Component {
     }
   }
 
+  componentDidMount(){
+    this.getInventory();
+  }
+
+  
   getInventory = () =>{
     axios.get("/api/inventory")
     .then(res =>{
@@ -23,17 +33,54 @@ class App extends Component {
       console.log(err);
     })
   }
-
-
-  componentDidMount(){
-    
-    this.getInventory();
+  deleteItem = (id) =>{
+    axios.delete(`/api/inventory/${id}`)
+    .then(res =>{
+      this.getInventory();
+    })
+    .catch(err =>{
+      alert(err)
+    })
   }
+
+  createItem = (name, price, image) =>{
+    if (image === ""){
+      image = "https://static.toiimg.com/photo/msid-67586673/67586673.jpg?resizemode=4&width=400"
+    }
+    if (price === ""){
+      price = 0;
+    }
+    //image = image.toString()
+    axios.post("/api/inventory", {name, price, image})
+    .then(res =>{
+      this.getInventory();
+    })
+    .catch(err =>{
+      console.log(err)
+    })
+  }
+
+
+
+  
 
   render(){
     return (
       <div className="App">
           <Header/>
+
+          
+  
+              <Dashboard 
+              inventory = {this.state.inventory}
+              deleteItem = {this.deleteItem}
+              />
+           
+          
+
+          <Form 
+          createItem = {this.createItem}
+          />
       </div>
     );
   } 
